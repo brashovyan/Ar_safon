@@ -3,15 +3,16 @@
   <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
   <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
   <script src="https://cdn.jsdelivr.net/gh/c-frame/aframe-extras@7.1.0/dist/aframe-extras.min.js"></script>
+
   <body style="margin : 0px; overflow: hidden;">
     <a-scene embedded arjs='sourceType: webcam; debugUIEnabled: false; detectionMode: mono_and_matrix; matrixCodeType: 3x3;'>
       <!-- <a-marker type='barcode' value='6'> -->
-      <a-marker type="pattern" url="obj/pattern.patt" >
+      <a-marker id="marker" preset="hiro" emitevents="true" button>
         <a-entity
           position="0 0 0"
           rotation="0 0 0"
-          scale="2.5 2.5 2.5"
-          gltf-model="obj/scene.gltf"
+          scale="8 8 8"
+          gltf-model="models/Mukhrino_diorama_V8.gltf"
           animation-mixer
         ></a-entity>
       </a-marker>
@@ -19,22 +20,75 @@
     </a-scene>
   </body>
 <script>
-  var m = document.querySelector("a-marker")
-  m.addEventListener("markerFound", (e)=>{
+    var s = document.querySelector("a-scene") ;
+    var m = document.querySelector("a-marker");
+    var e = document.querySelector("a-entity");
+
+    //e.object3D.children[0].castShadow;
+    var xR=0;
+    var yR=0;
+    var mF=true;
+
+  m.addEventListener("markerFound", (evt)=>{
      m.object3D.visible = true;
+     console.log(s.object3D);
   })
 
-  m.addEventListener("markerLost", (e)=>{
+  m.addEventListener("markerLost", (evt)=>{
      m.object3D.visible = true;
+     console.log(s.object3D);
   })
+
+  var mouseDown = false,
+    mouseX = 0,
+    mouseY = 0;
+
+function onMouseMove(evt) {
+    if (!mouseDown) {
+        return;
+    }
+    
+    evt.preventDefault();
+
+    var deltaX = evt.clientX - mouseX;
+    var deltaY = evt.clientY - mouseY;
+    mouseX = evt.clientX;
+    mouseY = evt.clientY;
+    rotateScene(deltaX, deltaY);
+}
+
+function onMouseDown(evt) {
+    evt.preventDefault();
+    mouseDown = true;
+    mouseX = evt.clientX;
+    mouseY = evt.clientY;
+}
+
+function onMouseUp(evt) {
+    evt.preventDefault();
+    mouseDown = false;
+}
+
+    s.addEventListener('mousemove', function (e) {
+        onMouseMove(e);
+    }, false);
+    s.addEventListener('mousedown', function (e) {
+        onMouseDown(e);
+    }, false);
+    s.addEventListener('mouseup', function (e) {
+        onMouseUp(e);
+    }, false);
+
+
+function rotateScene(deltaX, deltaY) {
+    xR+= deltaX ;
+    yR+= deltaY ;
+    e.object3D.rotation.y += deltaX/180;
+    //e.object3D.rotation.x += deltaY/180;
+}
+
+
+
 
 </script>
 </html>
-
-
-
-
-
-
-
-
